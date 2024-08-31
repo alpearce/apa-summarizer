@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+    <!-- Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h3 class="center-align">Upload File</h3>
+        <div class="row">
+            <form class="col s12" method="post" enctype="multipart/form-data" action="/upload">
+                <!-- Prompt Input -->
+                <!-- Prompt Textarea with Default Value from Flask Variable -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <textarea id="prompt" name="prompt" class="materialize-textarea"
+                            required>{{ default_prompt }}</textarea>
+                        <label for="prompt">Prompt for AI Summarization</label>
+                    </div>
+                </div>
+
+                <!-- Name Input -->
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input id="dog-name" name="dog-name" type="text" class="validate" required>
+                        <label for="dog-name">Dog's Name</label>
+                    </div>
+                </div>
+
+                <!-- File Input -->
+                <div class="file-field input-field">
+                    <div class="btn">
+                        <span>Choose File</span>
+                        <input type="file" name="file" required>
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text">
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <div class="center-align">
+                    <button class="btn waves-effect waves-light" type="submit">Upload
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Materialize JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>

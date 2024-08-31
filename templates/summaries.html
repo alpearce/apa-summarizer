@@ -1,0 +1,56 @@
+<!-- templates/output.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Summary For {{ dog_name }}</title>
+
+    <!-- Import Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 20px;
+        }
+
+        .section-title {
+            color: #2e7d32;
+        }
+
+        .content {
+            margin-bottom: 2em;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Summary of {{file_name}} for {{dog_name}}</h1>
+        <h5>The following sections of the file were summarized:</h5>
+        <p style="white-space: pre-wrap;">{{ titles_summarized | safe }}</p>
+        <h5>The following sections were ignored:</h5>
+        <p style="white-space: pre-wrap;">{{ titles_ignored | safe }}</p>
+        <hr>
+    </div>
+
+    <div class="container">
+        <h4>General Summary</h4>
+        <p style="white-space: pre-wrap;">{{ file_summary|safe }}</p>
+
+        <h4>Summarized Sections</h4>
+        {% for title, summary in summaries.items() %}
+        <h5>{{ title }}</h5>
+        <p style="white-space: pre-wrap;">{{ summary|safe }}</p>
+        <hr>
+        {% endfor %}
+    </div>
+
+    <!-- Import Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>
