@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APA File Summarizer</title>
+
+    <!-- Import Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            margin-top: 50px;
+        }
+
+        .section-title {
+            color: #2e7d32;
+        }
+
+        .summary-result {
+            white-space: pre-wrap;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h4 class="section-title">APA File Summarizer</h4>
+
+        <!-- Upload Form -->
+        <form id="uploadForm" action="/summarize" enctype="multipart/form-data" method="post" class="col s12">
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="animal-name" name="animal-name" class="materialize-textarea" required></textarea>
+                    <label for="animal-name">Animal's Name</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="file-field input-field col s12">
+                    <div class="btn">
+                        <span>File</span>
+                        <input type="file" name="file" required>
+                    </div>
+                    <div class="file-path-wrapper">
+                        <input class="file-path validate" type="text" placeholder="Select PDF file">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <textarea id="prompt" name="prompt" class="materialize-textarea"
+                        required>{{ default_prompt }}</textarea>
+                    <label for="prompt">AI System Prompt</label>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="input-field col s12">
+                    <select id="method" name="method" class="browser-default">
+                        <option value="" disabled selected>Choose summarization method</option>
+                        <option value="method1">Summary of Summaries</option>
+                        <option value="method2">Something else clever</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn waves-effect waves-light">Submit</button>
+        </form>
+
+        <!-- Display Summary Result -->
+        <div id="result" class="summary-result"></div>
+    </div>
+
+    <!-- Import Materialize JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+
+</html>
