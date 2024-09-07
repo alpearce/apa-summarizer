@@ -52,7 +52,7 @@ def remove_regex(text, pattern):
 
 def extract_sections_by_horizontal_lines(input_pdf):
     # Open the PDF document
-    doc = fitz.open(input_pdf)
+    doc = fitz.open(stream=input_pdf, filetype='pdf')
     text_sections = {}
     current_section = ""
 

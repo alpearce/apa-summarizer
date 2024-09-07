@@ -11,7 +11,7 @@ model_3_5_turbo =  "gpt-3.5-turbo" # Cheaper but can handle less text.
 
 max_model_tokens = {model_3_5_turbo: 16385, model_4_o: 30339}
 
-system_prompt = "You are an animal shelter assistant that summarizes case files so animals can be matched with adoptive homes. Tone should be honest but positive. Most entries in the files are dated, and summaries should highlight progress or changes over time."
+#system_prompt = "You are an animal shelter assistant that summarizes case files to improve animal care, and so the animals can be placed in adoptive homes. Tone should be honest but positive. Most entries in the files are dated, and summaries should highlight progress or changes over time."
 titles_prompt = "This is a list of section titles from a shelter pet's history. Return a comma-separated list containing only the titles of sections that are 1) relevant to behavioral history or 2) likely to contain other info that should be provided to a potential adopter.\n{}"
 section_summary_prompt = "Summarize this section from a case file for a shelter dog named {}. The section is titled {}. You don't need to restate the title in your response. {}"
 file_summary_prompt = "Summarize this case file for a shelter dog named {}. {}"
@@ -20,12 +20,13 @@ file_summary_prompt = "Summarize this case file for a shelter dog named {}. {}"
 always_exclude_sections = ["Matchmaker Summary", "Kennel Card / Web Site Memo"]
 
 class AISummarizer: 
-    def __init__(self, model):
+    def __init__(self, model, system_prompt):
         self.model = model
         self.client = OpenAI()
+        self.system_prompt = system_prompt
 
     def summarize_file(self, text: str, name: str):
-        return self.chat_completion(system_prompt, file_summary_prompt.format(name, text), temperature=0.2, max_tokens=750)
+        return self.chat_completion(file_summary_prompt.format(name, text), temperature=0.2, max_tokens=750)
 
     def summarize_file_in_sections(self, text: dict, prompt: str, name: str):
         """
@@ -40,7 +41,7 @@ class AISummarizer:
         titles = ', '.join(list(text.keys()))
         # Another way to do filter sections is to pass the whole section in and see if the AI thinks it is relevant,
         # but this is faster and cheaper.
-        recommended_sections = self.chat_completion(system_prompt, titles_prompt.format(titles), temperature=0.2, max_tokens=200).split(', ')
+        recommended_sections = self.chat_completion(titles_prompt.format(titles), temperature=0.2, max_tokens=200).split(', ')
         titles_to_summarize = [item for item in recommended_sections if item not in always_exclude_sections]
 
         with ThreadPoolExecutor() as executor:
@@ -52,9 +53,9 @@ class AISummarizer:
         return summaries
 
     def summarize_section(self, title, content, name):
-        return self.chat_completion(system_prompt, section_summary_prompt.format(name, title, content), 0.2, 500)
+        return self.chat_completion(section_summary_prompt.format(name, title, content), 0.2, 500)
             
-    def chat_completion(self, system_prompt, user_prompt: str, temperature: float, max_tokens: int) -> str:
+    def chat_completion(self, user_prompt: str, temperature: float, max_tokens: int) -> str:
         """
         Sends a chat completion to OpenAI.
 
@@ -68,7 +69,7 @@ class AISummarizer:
         messages=[
             {
                 "role" : "system",
-                "content" : system_prompt,
+                "content" : self.system_prompt,
             },
             {
                 "role" : "user",

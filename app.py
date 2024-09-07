@@ -8,7 +8,7 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 app.config['PARSED_PDF_CACHE'] = 'parsed'
 app.config['ALLOWED_EXTENSIONS'] = {'pdf'}
 
-default_oneshot_prompt = "You will be provided with notes about a shelter dog. Summarize all the text relating to the dog's behavior, interactions with people, interactions with other animals, and its response to training, if applicable. There is a date above each entry. Make sure the summary reflects progression over time."
+system_prompt = "You are an animal shelter assistant that summarizes case files to improve animal care, and so the animals can be placed in adoptive homes. Tone should be honest but positive. Most entries in the files are dated, and summaries should highlight progress or changes over time."
 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
@@ -19,35 +19,29 @@ def allowed_file(filename):
 @app.route('/')
 def upload_form():
     # Maybe add a way to select an already-uploaded file?
-    return render_template('upload.html', default_prompt=default_oneshot_prompt)
+    return render_template('alt_upload.html', default_prompt=system_prompt)
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    prompt = request.form.get('prompt')
-    name = request.form.get('dog-name')
+@app.route('/summarize', methods=['POST'])
+def summarize_file():
+    system_prompt = request.form.get('prompt')
+    name = request.form.get('animal-name')
+    method = request.form.get('method') # TODO: use
 
     if 'file' not in request.files:
-        return redirect(request.url)
+        return redirect(request.url) # TODO: idk what this is meant to be
     
     file = request.files['file']
     if file.filename == '':
-        return redirect(request.url)
+        return jsonify({'error': 'No file selected'}), 400
     
     if file and allowed_file(file.filename):
         filename = file.filename
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return redirect(url_for('process_file', filename=filename, name=name, prompt=prompt))
+        # Save the file if we want to re-process it later.
+        #file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        content = file.read()
 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-
-@app.route('/process/<filename>/<name>/<prompt>')
-def process_file(filename, name, prompt):
-    ai = ai_summarizer.AISummarizer("gpt-4o")
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    if os.path.exists(file_path):
-        sections = parse_pdf.extract_sections_by_horizontal_lines(file_path)
+        ai = ai_summarizer.AISummarizer("gpt-4o", system_prompt)
+        sections = parse_pdf.extract_sections_by_horizontal_lines(content)
         # Summarize individual sections in more detail.
         summaries = ai.summarize_file_in_sections(sections, "prompt", name)
         titles_summarized = ', '.join(list(summaries.keys()))
@@ -57,9 +51,23 @@ def process_file(filename, name, prompt):
         file_summary = ai.summarize_file(summary_doc, name)
 
         return render_template('summaries.html', file_name=filename, dog_name="Beluga", file_summary=file_summary, summaries=summaries, titles_summarized=titles_summarized, titles_ignored=titles_ignored)
+        # TODO: include all the info, just testing the  json
+        #return jsonify({'summary': file_summary}), 200
     else:
-        return "File not found", 404
+        return jsonify({'error': 'Invalid file'}), 400
 
+
+@app.errorhandler(400)
+def bad_request_error(error):
+    # Add additional context here
+    error_details = "There was an issue with your request. Please check the data and try again."
+    return render_template('400.html', error_details=error_details), 400
+
+@app.errorhandler(500)
+def internal_server_error(error):
+    # Add additional context here
+    error_details = "An unexpected error occurred on our side. We are working to fix it."
+    return render_template('500.html', error_details=error_details), 500
 
 #@app.route('/process/<filename>')
 #def process_file(filename):

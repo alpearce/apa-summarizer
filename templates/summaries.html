@@ -29,10 +29,10 @@
 
 <body>
     <div class="container">
-        <h1>Summary of {{file_name}} for {{dog_name}}</h1>
+        <h1 style="font-size: 36px;">Summary of {{file_name}} for {{dog_name}}</h1>
         <h5>The following sections of the file were summarized:</h5>
         <p style="white-space: pre-wrap;">{{ titles_summarized | safe }}</p>
-        <h5>The following sections were ignored:</h5>
+        <h5>The following sections were skipped:</h5>
         <p style="white-space: pre-wrap;">{{ titles_ignored | safe }}</p>
         <hr>
     </div>
@@ -50,7 +50,16 @@
     </div>
 
     <!-- Import Materialize JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
+        // Retrieve data from session storage
+        const responseData = JSON.parse(sessionStorage.getItem('responseData'));
+        if (responseData) {
+            console.log('Retrieved Data:', responseData);
+            // Display the data on the page
+            document.getElementById('displayArea').innerText = JSON.stringify(responseData);
+        }
+    </script>
+
 </body>
 
 </html>

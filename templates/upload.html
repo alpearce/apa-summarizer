@@ -11,7 +11,7 @@
 
 <body>
     <div class="container">
-        <h3 class="center-align">Upload File</h3>
+        <h3 class="center-align">Summarize File</h3>
         <div class="row">
             <form class="col s12" method="post" enctype="multipart/form-data" action="/upload">
                 <!-- Prompt Input -->
@@ -45,7 +45,7 @@
 
                 <!-- Submit Button -->
                 <div class="center-align">
-                    <button class="btn waves-effect waves-light" type="submit">Upload
+                    <button class="btn waves-effect waves-light" type="submit">Summarize
                     </button>
                 </div>
             </form>
@@ -53,7 +53,29 @@
     </div>
 
     <!-- Materialize JavaScript -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js">
+        <!-- JavaScript to handle form submission -->
+        document.getElementById('uploadForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            const formData = new FormData(this);
+
+            try {
+                const response = await fetch('/process', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                alert('File processed successfully: ' + JSON.stringify(result));
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to process the file.');
+            }
+        });
+    </script>
+
+    </script>
 </body>
 
 </html>
