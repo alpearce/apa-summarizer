@@ -7,7 +7,7 @@ The goal is for shelter staff to be able to summarize long histories for dogs an
 The current iteration is work-in-progress attempt at a Python Flask web app that parses PDFs with PyMuPDF and summarizes the content using OpenAI. The app is deployed on Heroku.
 
 ## Cry for help 
-I am a backend security engineer. This is not what I know how to do. All feedback welcome.
+I am a backend security engineer. This is not what I do best. All feedback welcome.
 
 ## Table of Contents
 
@@ -86,7 +86,7 @@ To set up the project locally, follow these steps:
     Use Gunicorn to run the app locally to simulate how it will run in production:
 
     ```bash
-    gunicorn app:app
+    gunicorn app.app:app
     ```
 
 3. **Open the app in your web browser:**
