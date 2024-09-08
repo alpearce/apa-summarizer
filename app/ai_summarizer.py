@@ -1,5 +1,3 @@
-import math
-import parse_pdf
 import tiktoken
 from concurrent.futures import ThreadPoolExecutor
 from openai import OpenAI

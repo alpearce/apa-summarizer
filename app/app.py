@@ -1,7 +1,7 @@
 from flask import Flask, request, redirect, url_for, send_from_directory, render_template, jsonify
-import ai_summarizer
+from app import ai_summarizer
+from app import parse_pdf
 import os
-import parse_pdf
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
