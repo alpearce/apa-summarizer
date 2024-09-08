@@ -2,7 +2,9 @@
 
 ## Project Overview
 
-This is an attempt at a Python Flask web app that parses PDF case files produced by Shelterluv and summarizes the content using OpenAI. The app is deployed on Heroku.
+The goal is for shelter staff to be able to summarize long histories for dogs and cats so they can be placed in appropriate adoptive homes. We also want to be able to summarize medical histories so clinic staff can quickly find out what has been tried and what needs to happen next. Ultimately, we want an extremely simple app (choose file, click button, get summary) that can be easily maintained. In the meantime, we probably need to create a more interactive experimental demo in order to collect feedback from shelter staff on the results. 
+
+The current iteration is work-in-progress attempt at a Python Flask web app that parses PDFs with PyMuPDF and summarizes the content using OpenAI. The app is deployed on Heroku.
 
 ## Cry for help 
 I am a backend security engineer. This is not what I know how to do. All feedback welcome.
@@ -17,6 +19,9 @@ I am a backend security engineer. This is not what I know how to do. All feedbac
   - [Running the App Locally](#running-the-app-locally)
   - [Deploying to Heroku](#deploying-to-heroku)
   - [Environment Variables](#environment-variables)
+  - [How it works](#how-it-works)
+    - [Other possible summarization methods](#other-possible-summarization-methods)
+  - [TODOs and future work](#todos-and-future-work)
 
 ## Installation
 
@@ -124,3 +129,26 @@ Make sure to set up the required environment variables in Heroku:
 
 ```bash
 heroku config:set OPENAI_API_KEY=your_openai_api_key
+```
+
+## How it works
+
+The inputs are large, and some include sections that are not totally relevant to the question (e.g. a "feeding plan" section for a behavior dog.) Some of the complexity of the problem has been selectively truncating the files for cost and length limits. The current algorithm is: 
+- parse and clean each section of the PDF
+- submit a list of section titles to AI and ask it which ones are most relevant
+- summarize each of the relevant sections
+- concatenate the list of summaries and create an overall summary 
+
+### Other possible summarization methods
+
+- prompt with a list of questions, such as "how does this dog do with other dogs" or "has she ever lived with children"
+
+## TODOs and future work
+- [ ] Add tests 
+- [ ] Add logging
+- [ ] Add a progress bar because the summaries take a while
+- [ ] Performance optimizations 
+- [ ] Add features for capturing feedback (job id, snapshots, form) 
+- [ ] Create a flow for medical animals
+- [ ] Experiment with other summarization methods
+- [ ] Check in static CSS assets 
