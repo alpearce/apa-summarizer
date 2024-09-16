@@ -13,7 +13,11 @@
 <body>
     <div class="container center-align" style="margin-top: 100px;">
         <h1 class="red-text">400 - Bad Request</h1>
-        <p>{{ error_details }}</p>
+        <p>Sorry, something went wrong while processing your request.</p>
+        <div class="error-details">
+            <strong>Error Details:</strong>
+            <p>{{ error_details }}</p>
+        </div>
         <a href="/" class="btn waves-effect waves-light">Go Back Home</a>
     </div>
 
