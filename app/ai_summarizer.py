@@ -7,6 +7,7 @@ from typing import List, Tuple, Optional
 model_4_o = "gpt-4o" 
 model_3_5_turbo =  "gpt-3.5-turbo" # Cheaper but can handle less text.
 
+# Need to find out 4o-mini's threshold (this isn't currently used anyway).
 max_model_tokens = {model_3_5_turbo: 16385, model_4_o: 30339}
 
 #system_prompt = "You are an animal shelter assistant that summarizes case files to improve animal care, and so the animals can be placed in adoptive homes. Tone should be honest but positive. Most entries in the files are dated, and summaries should highlight progress or changes over time."
