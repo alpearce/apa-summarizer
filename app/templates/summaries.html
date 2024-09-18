@@ -40,8 +40,9 @@
     <div class="container">
         <h4>General Summary</h4>
         <p style="white-space: pre-wrap;">{{ file_summary|safe }}</p>
+        <hr>
 
-        <h4>Summarized Sections</h4>
+        <h4>Detailed Section Summaries</h4>
         {% for title, summary in summaries.items() %}
         <h5>{{ title }}</h5>
         <p style="white-space: pre-wrap;">{{ summary|safe }}</p>

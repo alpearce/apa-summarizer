@@ -1,6 +1,5 @@
 from flask import Flask, abort, request, redirect, url_for, send_from_directory, render_template, jsonify
 from app import ai_summarizer, parse_pdf
-import json
 import os
 
 app = Flask(__name__)
@@ -39,7 +38,7 @@ def summarize_file():
         content = file.read()
 
         try:
-            ai = ai_summarizer.AISummarizer("gpt-4o", system_prompt)
+            ai = ai_summarizer.AISummarizer("gpt-4o-mini", system_prompt)
         except Exception as e:
             abort(500, description=f"Failed to initialize AI summarizer: {e.message}")
 

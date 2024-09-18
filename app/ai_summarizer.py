@@ -11,7 +11,7 @@ model_3_5_turbo =  "gpt-3.5-turbo" # Cheaper but can handle less text.
 max_model_tokens = {model_3_5_turbo: 16385, model_4_o: 30339}
 
 #system_prompt = "You are an animal shelter assistant that summarizes case files to improve animal care, and so the animals can be placed in adoptive homes. Tone should be honest but positive. Most entries in the files are dated, and summaries should highlight progress or changes over time."
-titles_prompt = "This is a list of section titles from a shelter pet's history. Return a comma-separated list containing only the titles of sections that are 1) relevant to behavioral history or 2) likely to contain other info that should be provided to a potential adopter.\n{}"
+titles_prompt = "This is a list of section titles from a shelter pet's history. Rank the titles according to relevance to behavior, training sessions, medical handling, or socialization. Return a comma-separated list excluding the bottom quarter of the ranking.\n{}"
 section_summary_prompt = "Summarize this section from a case file for a shelter dog named {}. The section is titled {}. You don't need to restate the title in your response. {}"
 file_summary_prompt = "Summarize this case file for a shelter dog named {}. {}"
 
@@ -44,7 +44,12 @@ class AISummarizer:
         titles_to_summarize = [item for item in recommended_sections if item not in always_exclude_sections]
 
         with ThreadPoolExecutor() as executor:
-            futures = {executor.submit(self.summarize_section, title, text[title], name): title for title in titles_to_summarize}
+            futures = {}
+            for title in titles_to_summarize:
+                try:
+                    futures[executor.submit(self.summarize_section, title, text[title], name)] = title
+                except KeyError:
+                    print(f"KeyError: '{title}' not found in text. Available titles: {text.keys()}")
             for future in futures:
                 title = futures[future]  # Get the title associated with this Future
                 summary = future.result()  # Get the summary result
